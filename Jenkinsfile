@@ -18,7 +18,9 @@ node {
 
     stage('Trivy check image') {
         sh 'trivy fs . > trivyfs.txt'
-        sh 'trivy image patrick-cloud-dev-dbt-docs > trivyimage.txt'
+        sh 'trivy image patrick-cloud-dev-dbt-docs:latest > trivyimage.txt'
+        sh 'trivy --exit-code 1 --severity CRITICAL image patrick-cloud-dev-dbt-docs:latest'
+        sh 'trivy --exit-code 1 --severity HIGH image patrick-cloud-dev-dbt-docs:latest'
     }
 
     stage('Push image') {
