@@ -1,4 +1,4 @@
-FROM python:3.10
+FROM python:3.9
 
 # Install DBT Python Package
 RUN pip install dbt-core==1.7.11
