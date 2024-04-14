@@ -1,7 +1,4 @@
-FROM python:3.9
-
-# Update Common Python Libraries
-RUN python3 -m pip install --upgrade setuptools==65.5.1
+FROM python:3.10
 
 # Install DBT Python Package
 RUN pip install dbt-core==1.7.11
