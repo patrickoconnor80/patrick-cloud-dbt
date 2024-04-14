@@ -18,11 +18,9 @@ node {
             sh 'docker push 948065143262.dkr.ecr.us-east-1.amazonaws.com/patrick-cloud-dev-dbt-docs:latest'
         }
     }
-    
-    stage('Test image') {
-  
 
-       
+    stage('Test image') {
+        app.inside {
             sh 'echo "Tests passed"'
         }
     }
