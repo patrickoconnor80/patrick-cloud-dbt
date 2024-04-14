@@ -15,6 +15,6 @@ patrick_cloud:
 EOF
 
 cd patrick-cloud
-dbt deps --profiles-dir .
-dbt docs generate --target dev --profiles-dir .
-dbt docs serve --profiles-dir . > /dev/null 2>&1
+dbt deps
+dbt docs generate --target dev
+dbt docs serve
