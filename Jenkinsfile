@@ -14,13 +14,15 @@ node {
         sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 948065143262.dkr.ecr.us-east-1.amazonaws.com'
         sh 'docker build -t patrick-cloud-dev-dbt-docs .'
         sh 'docker tag patrick-cloud-dev-dbt-docs:latest 948065143262.dkr.ecr.us-east-1.amazonaws.com/patrick-cloud-dev-dbt-docs:latest'
-        sh 'docker push 948065143262.dkr.ecr.us-east-1.amazonaws.com/patrick-cloud-dev-dbt-docs:latest'
     }
 
-    stage('Test image') {
-        app.inside {
-            sh 'echo "Tests passed"'
-        }
+    stage('Trivy check image') {
+        sh 'trivy fs . > trivyfs.txt'
+        sh 'trivy image patrick-cloud-dev-dbt-docs > trivyimage.txt'
+    }
+
+    stage('Push image') {
+        sh 'docker push 948065143262.dkr.ecr.us-east-1.amazonaws.com/patrick-cloud-dev-dbt-docs:latest'
     }
 
     // stage('Push image') {
