@@ -1,5 +1,8 @@
 FROM python:3.9
 
+# Update Pip
+RUN pip install --upgrade pip
+
 # Install DBT Python Package
 RUN pip install dbt-core==1.7.11
 
