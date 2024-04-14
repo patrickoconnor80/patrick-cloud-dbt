@@ -1,7 +1,7 @@
 FROM python:3.9
 
-# Update Pip
-RUN pip install --upgrade pip
+# Update Common Python Libraries
+RUN python3 -m pip install --upgrade pip setuptools wheel
 
 # Install DBT Python Package
 RUN pip install dbt-core==1.7.11
