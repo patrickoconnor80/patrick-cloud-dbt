@@ -29,6 +29,6 @@ node {
     
     stage('Trigger ManifestUpdate') {
                 echo "triggering updatemanifestjob"
-                build job: 'updatemanifest', parameters: [string(name: 'DOCKERTAG', value: env.BUILD_NUMBER)]
+                build job: 'dbt-docs-update-manifest', parameters: [string(name: 'DOCKERTAG', value: env.IMAGE_TAG)]
         }
 }
