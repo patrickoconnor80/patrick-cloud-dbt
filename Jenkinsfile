@@ -12,6 +12,10 @@ node {
         sh 'docker tag patrick-cloud-dev-dbt-docs:latest 948065143262.dkr.ecr.us-east-1.amazonaws.com/patrick-cloud-dev-dbt-docs:latest'
     }
 
+    environment {
+        IMAGE_TAG = sh(script: "docker images -q patrick-cloud-dev-dbt-docs --no-trunc | cut -d ":" -f 2", returnStdout: true).trim()
+    }
+
     stage('Trivy Check Image') {
         sh 'trivy --exit-code 0 --severity HIGH image patrick-cloud-dev-dbt-docs:latest'
         sh 'trivy --exit-code 1 --severity CRITICAL image patrick-cloud-dev-dbt-docs:latest'
