@@ -13,7 +13,7 @@ node {
     }
 
     environment {
-        IMAGE_TAG = sh(script: "docker images -q patrick-cloud-dev-dbt-docs --no-trunc | cut -d ":" -f 2", returnStdout: true).trim()
+        IMAGE_TAG = sh(script: 'docker images -q patrick-cloud-dev-dbt-docs --no-trunc | cut -d ":" -f 2', returnStdout: true).trim()
     }
 
     stage('Trivy Check Image') {
