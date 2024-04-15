@@ -1,5 +1,4 @@
 node {
-    def app
 
     stage('Clone repository') {
         checkout scm
@@ -22,8 +21,8 @@ node {
         sh 'docker push 948065143262.dkr.ecr.us-east-1.amazonaws.com/patrick-cloud-dev-dbt-docs:latest'
     }
     
-    stage('Trigger ManifestUpdate') {
-                echo "triggering updatemanifestjob"
+    stage('Trigger DBT Docs Manifest Update') {
+                echo "triggering dbt-docs-update-manifest"
                 build job: 'dbt-docs-update-manifest', parameters: [string(name: 'DOCKERTAG', value: env.IMAGE_TAG)]
         }
 }
