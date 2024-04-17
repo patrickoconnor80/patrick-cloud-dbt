@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-cat > ~/.dbt/profiles.yml <<EOF
+cat > patrick_cloud/profiles.yml <<EOF
 patrick_cloud:
   target: dev
   outputs:
@@ -9,12 +9,12 @@ patrick_cloud:
       catalog: snowplow
       schema: atomic
       host: $DATABRICKS_HOST
-      http_path:$DATABRICKS_SQL_ENDPOINT
+      http_path: $DATABRICKS_SQL_ENDPOINT
       token: $DATABRICKS_TOKEN
       threads: 1
 EOF
 
-cd patrick-cloud
+cd patrick_cloud
 dbt deps
-dbt docs generate --target dev
-dbt docs serve
+dbt docs generate --target dev --profiles-dir .
+dbt docs serve --profiles-dir .
