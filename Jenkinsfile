@@ -11,9 +11,11 @@ node {
     stage('Build Image') {
         sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 948065143262.dkr.ecr.us-east-1.amazonaws.com'
         sh 'docker build -t patrick-cloud-dev-dbt-docs .'
-        sh 'echo $IMAGE_TAG'
+        env.IMAGE_TAG = sh (script: 'uuidgen | cut -c 1-10', returnStdout: true)
+        sh "echo ${env.IMAGE_TAG}"
+        sh "echo $IMAGE_TAG"
         sh 'docker tag patrick-cloud-dev-dbt-docs:latest 948065143262.dkr.ecr.us-east-1.amazonaws.com/patrick-cloud-dev-dbt-docs:latest'
-        sh 'docker tag patrick-cloud-dev-dbt-docs:latest 948065143262.dkr.ecr.us-east-1.amazonaws.com/patrick-cloud-dev-dbt-docs:$IMAGE_TAG'
+        sh 'docker tag patrick-cloud-dev-dbt-docs:latest 948065143262.dkr.ecr.us-east-1.amazonaws.com/patrick-cloud-dev-dbt-docs:latest'
     }
 
     stage('Trivy Check Image') {
