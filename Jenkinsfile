@@ -9,22 +9,22 @@ node {
     }
 
     stage('Build Image') {
-        sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 948065143262.dkr.ecr.us-east-1.amazonaws.com'
-        sh 'docker build -t patrick-cloud-dev-dbt-docs .'
+        sh "aws ecr get-login-password --region $AWS_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_NUM.dkr.ecr.$AWS_REGION.amazonaws.com"
+        sh "docker build -t patrick-cloud-$ENV-dbt-docs ."
         env.IMAGE_TAG = sh (script: 'uuidgen | cut -c 1-8', returnStdout: true).trim()
         sh "echo $IMAGE_TAG"
-        sh 'docker tag patrick-cloud-dev-dbt-docs:latest 948065143262.dkr.ecr.us-east-1.amazonaws.com/patrick-cloud-dev-dbt-docs:latest'
-        sh "docker tag patrick-cloud-dev-dbt-docs:latest 948065143262.dkr.ecr.us-east-1.amazonaws.com/patrick-cloud-dev-dbt-docs:$IMAGE_TAG"
+        sh "docker tag patrick-cloud-$ENV-dbt-docs:latest $AWS_ACCOUNT_NUM.dkr.ecr.$AWS_REGION.amazonaws.com/patrick-cloud-$ENV-dbt-docs:latest"
+        sh "docker tag patrick-cloud-$ENV-dbt-docs:latest $AWS_ACCOUNT_NUM.dkr.ecr.$AWS_REGION.amazonaws.com/patrick-cloud-$ENV-dbt-docs:$IMAGE_TAG"
     }
 
     stage('Trivy Check Image') {
-        sh 'trivy --exit-code 0 --severity HIGH image patrick-cloud-dev-dbt-docs:latest'
-        sh 'trivy --exit-code 1 --severity CRITICAL image patrick-cloud-dev-dbt-docs:latest'
+        sh "trivy --exit-code 0 --severity HIGH image patrick-cloud-$ENV-dbt-docs:latest"
+        sh "trivy --exit-code 1 --severity CRITICAL image patrick-cloud-$ENV-dbt-docs:latest"
     }
 
     stage('Push Image') {
-        sh 'docker push 948065143262.dkr.ecr.us-east-1.amazonaws.com/patrick-cloud-dev-dbt-docs:latest'
-        sh "docker push 948065143262.dkr.ecr.us-east-1.amazonaws.com/patrick-cloud-dev-dbt-docs:$IMAGE_TAG"
+        sh "docker push $AWS_ACCOUNT_NUM.dkr.ecr.$AWS_REGION.amazonaws.com/patrick-cloud-$ENV-dbt-docs:latest"
+        sh "docker push $AWS_ACCOUNT_NUM.dkr.ecr.$AWS_REGION.amazonaws.com/patrick-cloud-$ENV-dbt-docs:$IMAGE_TAG"
     }
     
     stage('Trigger DBT Docs Manifest Update') {
