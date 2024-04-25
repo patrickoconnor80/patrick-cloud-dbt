@@ -27,9 +27,22 @@ node {
         sh "docker push ${AWS_ACCOUNT_NUM}.dkr.ecr.${AWS_REGION}.amazonaws.com/patrick-cloud-$ENV-dbt-docs:latest"
         sh "docker push ${AWS_ACCOUNT_NUM}.dkr.ecr.${AWS_REGION}.amazonaws.com/patrick-cloud-$ENV-dbt-docs:$IMAGE_TAG"
     }
-    
-    stage('Trigger DBT Docs Manifest Update') {
-                echo "triggering dbt-docs-update-manifest"
-                build job: 'dbt-docs-update-manifest', parameters: [string(name: 'DOCKERTAG', value: env.IMAGE_TAG)]
+
+    stage('Update Image Tag in Manifest') {
+        script {
+            withCredentials([usernamePassword(credentialsId: 'github', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USERNAME')]) {
+                sh """
+                    git config user.email patrickoconnor8014@gmail.com
+                    git config user.name patrickoconnor80
+                    cat cfg/dbt.yaml
+                    sed -i 's+${AWS_ACCOUNT_NUM}.dkr.ecr.${AWS_REGION}.amazonaws.com/patrick-cloud-$ENV-dbt-docs.*+${AWS_ACCOUNT_NUM}.dkr.ecr.${AWS_REGION}.amazonaws.com/patrick-cloud-$ENV-dbt-docs:${IMAGE_TAG}+g' cfg/dbt.yaml
+                    cat cfg/dbt.yaml
+                    git add .
+                    git commit -m 'Done by Jenkins Job changemanifest: ${env.BUILD_NUMBER}'
+                    git push https://${GIT_USERNAME}:${GIT_PASSWORD}@github.com/${GIT_USERNAME}/patrick-cloud-kubernetes.git HEAD:main
+                """
+            }
         }
+    }
+
 }
